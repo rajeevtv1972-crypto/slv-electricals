@@ -18,18 +18,18 @@ A lightweight, mobile-friendly quotation and billing app for SLV Electricals, wi
 The frontend is deployed as Cloudflare Pages. The Pages Functions in `functions/` provide the authenticated API. **Do not use this app for real customer records until you complete these steps and test login.** The GitHub repository is public, so never put passwords, session secrets, or real customer data into repository files.
 
 ### 1. Create ten D1 databases
-In the [Cloudflare dashboard](https://dash.cloudflare.com/), go to **Workers & Pages → D1 SQL Database** (the label may vary). Create these databases. If you already created the earlier database named `slv-electricals-db`, you can use that existing database as `DB_1` instead of creating `slv-electricals-db-1`; create the other nine databases from the list and map `DB_1` to the existing database.
+In the [Cloudflare dashboard](https://dash.cloudflare.com/), go to **Workers & Pages → D1 SQL Database** (the label may vary). Create these databases. If your first database is already named `db`, use it as `DB_1`; map the remaining databases from the list to `DB_2` through `DB_10`.
 
-- `slv-electricals-db-1`
-- `slv-electricals-db-2`
-- `slv-electricals-db-3`
-- `slv-electricals-db-4`
-- `slv-electricals-db-5`
-- `slv-electricals-db-6`
-- `slv-electricals-db-7`
-- `slv-electricals-db-8`
-- `slv-electricals-db-9`
-- `slv-electricals-db-10`
+- `db` (first database)
+- `db-2`
+- `db-3`
+- `db-4`
+- `db-5`
+- `db-6`
+- `db-7`
+- `db-8`
+- `db-9`
+- `db-10`
 
 ### 2. Create the tables in every database
 For **each of the ten databases**, open its SQL Console, copy the complete contents of `schema.sql` from this repository, paste it into the console, and execute it. All ten databases need the same tables and indexes.
@@ -39,16 +39,16 @@ Open **Workers & Pages → Pages → slv-electricals → Settings → Bindings**
 
 | Variable name | D1 database |
 |---|---|
-| `DB_1` | `slv-electricals-db-1` |
-| `DB_2` | `slv-electricals-db-2` |
-| `DB_3` | `slv-electricals-db-3` |
-| `DB_4` | `slv-electricals-db-4` |
-| `DB_5` | `slv-electricals-db-5` |
-| `DB_6` | `slv-electricals-db-6` |
-| `DB_7` | `slv-electricals-db-7` |
-| `DB_8` | `slv-electricals-db-8` |
-| `DB_9` | `slv-electricals-db-9` |
-| `DB_10` | `slv-electricals-db-10` |
+| `DB_1` | `db` |
+| `DB_2` | `db-2` |
+| `DB_3` | `db-3` |
+| `DB_4` | `db-4` |
+| `DB_5` | `db-5` |
+| `DB_6` | `db-6` |
+| `DB_7` | `db-7` |
+| `DB_8` | `db-8` |
+| `DB_9` | `db-9` |
+| `DB_10` | `db-10` |
 
 Save the bindings. The app uses them as one logical store: each saved document is assigned consistently to a shard; history searches all ten; edits and deletes find records across all ten. `DB_1` stores shared business settings and the central invoice/quotation counters. Do not remove or rename bindings after saving records.
 
