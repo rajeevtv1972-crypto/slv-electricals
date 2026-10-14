@@ -17,3 +17,8 @@ CREATE TABLE IF NOT EXISTS app_settings (
   data TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS document_sequences (
+  type TEXT PRIMARY KEY,
+  value INTEGER NOT NULL DEFAULT 0
+);
