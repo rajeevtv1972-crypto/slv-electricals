@@ -4,9 +4,9 @@ import { json } from "../_shared/auth.js";
 function databases(env) {
   const first = env.DB_1 || env.DB;
   const numbered = [first, env.DB_2, env.DB_3, env.DB_4, env.DB_5, env.DB_6, env.DB_7, env.DB_8, env.DB_9, env.DB_10];
-  const anyNumbered = numbered.some(Boolean) || !!env.DB_1;
+  const hasAdditionalBinding = !!env.DB_1 || [env.DB_2, env.DB_3, env.DB_4, env.DB_5, env.DB_6, env.DB_7, env.DB_8, env.DB_9, env.DB_10].some(Boolean);
   if (numbered.every(Boolean)) return numbered;
-  if (!anyNumbered && env.DB) return [env.DB];
+  if (!hasAdditionalBinding && env.DB) return [env.DB];
   return null;
 }
 function ready(env) { return !!databases(env); }
