@@ -18,7 +18,7 @@ A lightweight, mobile-friendly quotation and billing app for SLV Electricals, wi
 The frontend is deployed as Cloudflare Pages. The Pages Functions in `functions/` provide the authenticated API. **Do not use this app for real customer records until you complete these steps and test login.** The GitHub repository is public, so never put passwords, session secrets, or real customer data into repository files.
 
 ### 1. Create ten D1 databases
-In the [Cloudflare dashboard](https://dash.cloudflare.com/), go to **Workers & Pages → D1 SQL Database** (the label may vary). Create these databases:
+In the [Cloudflare dashboard](https://dash.cloudflare.com/), go to **Workers & Pages → D1 SQL Database** (the label may vary). Create these databases. If you already created the earlier database named `slv-electricals-db`, you can use that existing database as `DB_1` instead of creating `slv-electricals-db-1`; create the other nine databases from the list and map `DB_1` to the existing database.
 
 - `slv-electricals-db-1`
 - `slv-electricals-db-2`
