@@ -35,8 +35,10 @@ In the Pages project's **Settings → Variables and Secrets**, add these for the
 - `SESSION_SECRET`: a randomly generated secret of at least 32 random bytes. Store it as a secret, not in GitHub. Generate one locally with PowerShell, for example:
   ```powershell
   $bytes = New-Object byte[] 48
-  [System.Security.Cryptography.RandomNumberGenerator]::Fill($bytes)
+  $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+  $rng.GetBytes($bytes)
   [Convert]::ToBase64String($bytes)
+  $rng.Dispose()
   ```
   Copy the generated output into the Cloudflare secret field. Do not paste it into chat or commit it to the repository.
 
