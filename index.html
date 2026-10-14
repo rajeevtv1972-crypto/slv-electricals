@@ -55,8 +55,10 @@ async function api(path, options={}){const res=await fetch(path,{credentials:'sa
 function setStatus(s){$('syncStatus').textContent=s}
 function showApp(){authenticated=true;$('authGate').style.display='none';document.querySelector('.app').style.display='block';setStatus('Cloud sync enabled')}
 async function loadCloud(){const [remoteDocs,remoteSettings]=await Promise.all([api('/api/docs'),api('/api/settings')]);docs=remoteDocs.documents||[];if(remoteSettings.business)business=remoteSettings.business;else{await api('/api/settings',{method:'PUT',body:JSON.stringify({business})})}
- // Import this browser's legacy records only when the cloud is empty.
- if(!docs.length){const legacy=load(DOCS,[]);for(const d of legacy){try{await api('/api/docs',{method:'POST',body:JSON.stringify(d)})}catch(e){console.warn('Legacy document import skipped',e)}}if(legacy.length){const refreshed=await api('/api/docs');docs=refreshed.documents||[]}}
+ // Import this browser's old local records when their IDs are not already in the cloud.
+ const legacy=load(DOCS,[]);const cloudIds=new Set(docs.map(d=>d.id));let imported=false;
+ for(const d of legacy){if(!d.id||cloudIds.has(d.id))continue;try{await api('/api/docs',{method:'POST',body:JSON.stringify(d)});imported=true;cloudIds.add(d.id)}catch(e){console.warn('Legacy document import skipped',e)}}
+ if(imported){const refreshed=await api('/api/docs');docs=refreshed.documents||[]}
  localStorage.setItem(DOCS,JSON.stringify(docs));localStorage.setItem(STORE,JSON.stringify(business));renderHistory();renderSettings();renderPreview();await reserveNumber(type);
 }
 async function startSession(){try{const s=await api('/api/session');if(s.authenticated){showApp();await loadCloud()}else $('authGate').style.display='grid'}catch(e){document.querySelector('.app').style.display='none';$('authError').textContent='Cloud setup issue: '+e.message+' Check the D1 binding and README.md setup steps.';$('authGate').style.display='grid'}}
