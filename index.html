@@ -33,7 +33,7 @@
  <div class="panel history"><div class="panel-head"><h3>Recent documents</h3><button class="btn small" id="clearHistoryBtn">Clear history</button></div><div class="panel-body"><div id="historyList" class="history-list"></div></div></div>
 </section>
 <section class="preview-wrap"><div class="preview-top"><h3>Document preview</h3><span class="live">LIVE PREVIEW</span></div><article class="paper" id="paper" style="position:relative">
-  <img class="scan-letterhead" src="/letterhead-scan.webp" alt="Original scanned company letterhead"><img class="scan-seal" src="/seal-scan.webp" alt="Original scanned company seal and signature">
+  <img id="scanLetterhead" class="scan-letterhead" alt="Original scanned company letterhead"><img id="scanSeal" class="scan-seal" src="/seal-scan.png" alt="Original scanned company seal and signature">
  <div class="paper-head"><div class="paper-brand"><div class="paper-logo">SLV</div><div><h2 id="pCompany">SLV Electrical Works</h2><div class="seller-meta" id="pSellerMeta">Electrical works & supplies</div></div></div><div class="doc-title"><h3 id="pDocTitle">QUOTATION</h3><div>No. <b id="pDocNo">SLV-Q-0001</b></div><div>Date: <b id="pDocDate"></b></div><div id="pValidityLine">Valid for: <b>15 days</b></div></div></div>
  <div class="paper-parties"><div><div class="paper-label">Prepared for</div><div class="party-name" id="pCustomer">Customer name</div><div class="party-text" id="pCustomerMeta">Customer address and contact</div><div class="party-text" id="pCustomerGstin"></div></div><div><div class="paper-label">Project / reference</div><div class="party-name" id="pReference">—</div><div class="party-text" id="pPo">PO / Work order: —</div></div></div>
  <table class="paper-table"><thead><tr><th># / Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody id="pItems"></tbody></table>
@@ -57,6 +57,7 @@ const read=id=>$(id).value.trim();
 const load=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
 let business=load(STORE,{name:'SLV Electrical Works',phone:'',address:'',gstin:'',email:'',bank:'',footer:'Thank you for your business.'});
 let docs=load(DOCS,[]), counters=load(COUNTERS,{quotation:1,invoice:1});
+async function loadScanAssets(){if(window.__slvScansLoaded)return;const urls=['/letterhead-b64-part1.txt','/letterhead-b64-part2.txt'];const chunks=await Promise.all(urls.map(async url=>{const res=await fetch(url+'?v=1',{cache:'no-store'});if(!res.ok)throw new Error('Could not load '+url);const data=(await res.text()).trim();if(!/^[A-Za-z0-9+/=]+$/.test(data))throw new Error('Invalid scan image data from '+url);return data}));const b64=chunks.join('');if(!b64.startsWith('iVBORw0KGgo'))throw new Error('The letterhead image is incomplete');const header=$('scanLetterhead'),seal=$('scanSeal');header.src='data:image/png;base64,'+b64;await header.decode();if(seal.decode)await seal.decode();window.__slvScansLoaded=true}
 async function api(path, options={}){const res=await fetch(path,{credentials:'same-origin',headers:{'Content-Type':'application/json',...(options.headers||{})},...options});let data={};try{data=await res.json()}catch{}if(!res.ok)throw new Error(data.error||'Request failed ('+res.status+')');return data}
 function setStatus(s){$('syncStatus').textContent=s}
 function showApp(){authenticated=true;$('authGate').style.display='none';document.querySelector('.app').style.display='block';setStatus('Cloud sync enabled')}
@@ -92,11 +93,11 @@ $('addItemBtn').addEventListener('click',()=>{items.push({description:'',qty:1,r
 $('quoteTab').addEventListener('click',()=>setType('quotation'));$('invoiceTab').addEventListener('click',()=>setType('invoice'));
 ['docNo','docDate','validity','reference','customer','phone','address','customerGstin','poNumber','gstRate','discount','advance','notes','terms'].forEach(id=>$(id).addEventListener('input',renderPreview));
 $('gstEnabled').addEventListener('change',()=>{$('gstRateWrap').style.display=$('gstEnabled').checked?'flex':'none';renderPreview()});
-$('newBtn').addEventListener('click',resetForm);$('clearBtn').addEventListener('click',resetForm);$('printBtn').addEventListener('click',()=>{renderPreview();window.print()});$('saveBtn').addEventListener('click',saveDoc);
+$('newBtn').addEventListener('click',resetForm);$('clearBtn').addEventListener('click',resetForm);$('printBtn').addEventListener('click',async()=>{try{await loadScanAssets()}catch(e){alert('The scanned letterhead or seal did not load: '+e.message);return}renderPreview();window.print()});$('saveBtn').addEventListener('click',saveDoc);
 $('settingsBtn').addEventListener('click',()=>{$('settingsModal').classList.remove('hidden');renderSettings()});$('closeSettings').addEventListener('click',()=>$('settingsModal').classList.add('hidden'));$('cancelSettings').addEventListener('click',()=>$('settingsModal').classList.add('hidden'));$('saveSettings').addEventListener('click',async()=>{await settingsFromForm();$('settingsModal').classList.add('hidden')});
 $('clearHistoryBtn').addEventListener('click',async()=>{if(confirm('Delete ALL shared documents from the cloud workspace? This affects both you and your friend and cannot be undone.')){try{await api('/api/docs',{method:'DELETE'});docs=[];localStorage.setItem(DOCS,'[]');renderHistory();setStatus('Cloud history cleared')}catch(e){alert('Could not clear cloud history: '+e.message)}}});
 $('historyList').addEventListener('click',e=>{const b=e.target.closest('[data-open]');if(b)openDoc(b.dataset.open)});
-$('docDate').value=today();$('docNo').value=nextNo(type);renderItems();renderPreview();renderHistory();startSession();
+$('docDate').value=today();$('docNo').value=nextNo(type);renderItems();renderPreview();renderHistory();loadScanAssets().catch(e=>console.error('Scanned letterhead/seal could not load',e));startSession();
 })();
 </script>
 </body>
