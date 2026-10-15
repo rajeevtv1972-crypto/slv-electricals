@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="720" viewBox="0 0 1600 720">
+<rect width="1600" height="720" fill="#fff"/>
+<g font-family="Georgia, 'Times New Roman', serif" fill="#111827">
+<text x="44" y="58" font-size="35" font-weight="bold"><tspan fill="#c51f26">GSTIN :</tspan> 29AEVPV3337E1ZV</text>
+<text x="44" y="105" font-size="31">✉  slvelectricalworks@gmail.com</text>
+<text x="700" y="108" font-size="42" font-style="italic" fill="#b52b2b">Prop : Venkatesh</text>
+<text x="1120" y="58" font-size="31">Mob : 9945828888</text>
+<text x="1100" y="105" font-size="30">9945928888, 8971828888</text>
+</g>
+<g transform="translate(50 150)" stroke="#172033" fill="none" stroke-width="5">
+<path d="M25 345 L25 90 Q25 55 60 55 L60 20 L82 20 L82 55 Q115 55 115 90 L115 345 Z"/>
+<path d="M42 345 L42 100 Q42 72 70 72 Q98 72 98 100 L98 345"/>
+<path d="M42 135 L98 135 M42 180 L98 180 M42 225 L98 225 M42 270 L98 270 M42 315 L98 315"/>
+<path d="M45 60 L70 0 L95 60 M34 345 L110 345"/>
+<circle cx="70" cy="110" r="18"/><path d="M70 130 L52 180 L70 205 L88 180 Z M52 180 L35 225 M88 180 L105 225"/>
+</g>
+<g font-family="Georgia, 'Times New Roman', serif">
+<text x="205" y="235" font-size="62" font-weight="bold" fill="#c5242a">Sri Lakshmi Venkateshwara Electricals</text>
+<text x="220" y="290" font-size="31" fill="#111827">Electrical Works L.T. &amp; H.T. Installation, Govt. Licenced Class I Electrical Contractor</text>
+<text x="245" y="337" font-size="30" fill="#111827">All Submersible Pumps &amp; Motor, Monoblock Pumps, Panel Board Sales &amp; Repairs.</text>
+<text x="220" y="400" font-size="34" fill="#bd292c">B.M. Road, Bidadi - 562 109, Ramanagara Tq., Bangalore South Dist.</text>
+</g>
+<path d="M25 445 H1575" stroke="#111827" stroke-width="5"/><path d="M25 455 H1575" stroke="#c5242a" stroke-width="3"/>
+<g font-family="Georgia, 'Times New Roman', serif" font-size="32" fill="#111827"><text x="45" y="525">Ref. No. : __________________</text><text x="1130" y="525">Date : __________________</text></g>
+</svg>
