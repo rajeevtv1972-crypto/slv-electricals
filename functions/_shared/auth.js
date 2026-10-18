@@ -23,7 +23,8 @@ function safeEqual(a, b) {
   return n === 0;
 }
 export async function createSession(env) {
-  const payload = b64url(enc.encode(JSON.stringify({sub:"slv-shared", exp:Date.now() + MAX_AGE * 1000})));
+  const issuedAt = Date.now();
+  const payload = b64url(enc.encode(JSON.stringify({sub:"slv-shared", iat:issuedAt, exp:issuedAt + MAX_AGE * 1000})));
   const signature = await sign(payload, env.SESSION_SECRET);
   return COOKIE + "=" + payload + "." + signature + "; Path=/; Max-Age=" + MAX_AGE + "; HttpOnly; Secure; SameSite=Strict";
 }
@@ -43,7 +44,9 @@ export async function getSession(request, env) {
   if (!safeEqual(signature, expected)) return null;
   try {
     const data = JSON.parse(new TextDecoder().decode(unb64url(payload)));
-    if (data.sub !== "slv-shared" || !Number.isFinite(data.exp) || data.exp < Date.now()) return null;
+    const now = Date.now();
+    // Tokens issued before the 8-hour policy had no iat claim, so reject them and require a fresh login.
+    if (data.sub !== "slv-shared" || !Number.isFinite(data.iat) || !Number.isFinite(data.exp) || data.iat > now + 60000 || now - data.iat > MAX_AGE * 1000 || data.exp < now || data.exp - data.iat > MAX_AGE * 1000) return null;
     return data;
   } catch { return null; }
 }
