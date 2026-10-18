@@ -1,6 +1,6 @@
 const COOKIE = "slv_session";
-// Shared workspace sessions expire after 8 hours and require signing in again.
-const MAX_AGE = 60 * 60 * 8;
+// Shared workspace sessions expire after 1 hour and require signing in again.
+const MAX_AGE = 60 * 60;
 const enc = new TextEncoder();
 function b64url(bytes) {
   let s = "";
@@ -45,7 +45,7 @@ export async function getSession(request, env) {
   try {
     const data = JSON.parse(new TextDecoder().decode(unb64url(payload)));
     const now = Date.now();
-    // Tokens issued before the 8-hour policy had no iat claim, so reject them and require a fresh login.
+    // Tokens from older session formats had no iat claim, so reject them and require a fresh login.
     if (data.sub !== "slv-shared" || !Number.isFinite(data.iat) || !Number.isFinite(data.exp) || data.iat > now + 60000 || now - data.iat > MAX_AGE * 1000 || data.exp < now || data.exp - data.iat > MAX_AGE * 1000) return null;
     return data;
   } catch { return null; }
