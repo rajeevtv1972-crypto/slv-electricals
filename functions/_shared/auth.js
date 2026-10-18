@@ -1,5 +1,6 @@
 const COOKIE = "slv_session";
-const MAX_AGE = 60 * 60 * 24 * 7;
+// Shared workspace sessions expire after 8 hours and require signing in again.
+const MAX_AGE = 60 * 60 * 8;
 const enc = new TextEncoder();
 function b64url(bytes) {
   let s = "";
